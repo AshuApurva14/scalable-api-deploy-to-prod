@@ -36,7 +36,7 @@ jobs:
           ${{ runner.os }}-node-
 
     - name: Install dependencies
-      run:|
+      run: |
         npm install
 
   Linting:
