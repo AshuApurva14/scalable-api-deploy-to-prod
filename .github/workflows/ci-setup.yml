@@ -36,10 +36,10 @@ jobs:
           ${{ runner.os }}-node-
 
     - name: Install dependencies
-      run :|
-         npm install
+      run:|
+        npm install
 
- Linting:
+  Linting:
     runs-on: [ubuntu-latest]
     needs: build
     environment: development
@@ -80,6 +80,8 @@ jobs:
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.2.0
+        with: 
+         node-version: '22.16.0'
   
       # Find npm cache directory
       - name: Get npm cache directory
