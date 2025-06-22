@@ -1,0 +1,105 @@
+name: CI setup for Nodejs API app
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+
+    steps:
+     
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.2
+
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v4.2.0
+      with:
+        node-version: '22.16.0'
+
+    # Find npm cache directory
+    - name: Get npm cache directory
+      id: npm-cache-dir
+      shell: bash
+      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
+    # Cache dependencies
+    - name: Cache dependencies 
+      uses: actions/cache@v4
+      id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+      with:
+        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install dependencies
+      run :|
+         npm install
+
+ Linting:
+    runs-on: [ubuntu-latest]
+    needs: build
+    environment: development
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Install cnd configure eslint
+        run: |
+          npm install --save-dev eslint
+
+      - name: Run linting
+        run: |
+          npm run lint 
+
+
+  Code_coverage:
+    runs-on: [ubuntu-latest]
+    needs: Linting
+    environment: development
+
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+
+      # Checkout Code repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      # Setup nodejs environement
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.2.0
+  
+      # Find npm cache directory
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+  
+        # Cache dependencies
+      - name: Cache dependencies 
+        uses: actions/cache@v4
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+  
+
+      - name: Code Coverage by SonarQube
+        run: |
+          npm install -g @sonar/scan
+          sonar-scanner -Dsonar.organization=apurva14a -Dsonar.projectKey=Apurva14A_deploy-api-nginx-prod  -Dsonar.sources=node-api-project -Dsonar.token=${{ env.SONAR_TOKEN }} 
+        
