@@ -39,6 +39,10 @@ jobs:
                  restore-keys: |
                     ${{ runner.os }}-node-
 
+            - name: list dir
+              run : |
+                 ls -la
+                 
             - name: Install dependencies
               id: install_dependent
               run: |
