@@ -3,8 +3,7 @@ name: CI setup for Nodejs API app
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
+
   # Add other permissions as needed, but do not use write-all
 
 
