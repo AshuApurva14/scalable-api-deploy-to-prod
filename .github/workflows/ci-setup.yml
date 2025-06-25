@@ -41,11 +41,11 @@ jobs:
 
       - name: Capturing Test cases
         run: |
-           keploy record -c “npm start --prefix ."
+           keploy record -c “npm start"
 
       - name: Running test cases
         run: |
-          keploy test -c “npm start --prefix ." --delay 10
+          keploy test -c “npm start" --delay 10
 
       
   Linting:
