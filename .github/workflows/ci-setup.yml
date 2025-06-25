@@ -6,6 +6,48 @@ on:
 
 
 jobs:
+  unit-testing:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.2.0
+        with:
+            node-version: 22.16.0
+
+      # Find npm cache directory
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
+      # Cache dependencies
+      - name: Cache dependencies 
+        uses: actions/cache@v4
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+                    ${{ runner.os }}-node-
+
+      # Unit test using Keploy
+      - name: Install Keploy
+        run: |
+            curl --silent -O -L https://keploy.io/install.sh && source install.sh
+
+      - name: Capturing Test cases
+        run: |
+           keploy record -c " npm start pm2"
+
+      - name: Running test cases
+        run: |
+           keploy test -c npm start pm2" --delay 10
+
+      
   Linting:
     runs-on: [ubuntu-latest]
       
