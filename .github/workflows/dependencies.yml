@@ -3,8 +3,6 @@ name: Install Node js dependencies
 on:
    workflow_call:
 
-permissions:
-  contents: write
 
 
 jobs:

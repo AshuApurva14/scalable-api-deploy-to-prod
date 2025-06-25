@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install dependencies
-        uses: Apurva14A/deploy-api-nginx-prod/.github/workflows/dependencies.yml@main
+        uses: ./.github/workflows/dependencies.yml@main
 
       # - name: Install and configure eslint
       #   run: |
@@ -47,7 +47,7 @@ jobs:
       # Setup nodejs environement
 
       - name: Install dependencies
-        uses: Apurva14A/deploy-api-nginx-prod/.github/workflows/dependencies.yml@main
+        uses: ./.github/workflows/dependencies.yml@main
 
       - name: Code Coverage by SonarQube
         run: |
