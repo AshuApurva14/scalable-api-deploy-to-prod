@@ -41,11 +41,11 @@ jobs:
 
       - name: Capturing Test cases
         run: |
-           keploy record -c “npm start"
+           keploy record -c “node src/server.js"
 
       - name: Running test cases
         run: |
-          keploy test -c “npm start" --delay 10
+          keploy test -c “node src/server.js" --delay 10
 
       
   Linting:
