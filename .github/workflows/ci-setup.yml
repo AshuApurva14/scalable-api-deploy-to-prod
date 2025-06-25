@@ -4,8 +4,6 @@ on:
   workflow_dispatch:
 
 
-  # Add other permissions as needed, but do not use write-all
-
 
 jobs:
   Linting:
