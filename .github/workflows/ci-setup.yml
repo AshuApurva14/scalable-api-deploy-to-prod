@@ -91,5 +91,5 @@ jobs:
       - name: Code Coverage by SonarQube
         run: |
           npm install -g @sonar/scan
-          sonar-scanner -Dsonar.organization=apurva14a -Dsonar.projectKey=Apurva14A_deploy-api-nginx-prod  -Dsonar.sources=node-api-project -Dsonar.token=${{ env.SONAR_TOKEN }} 
+          sonar-scanner -Dsonar.organization=apurva14a -Dsonar.projectKey=Apurva14A_deploy-api-nginx-prod  -Dsonar.sources=src -Dsonar.token=${{ env.SONAR_TOKEN }} 
         
