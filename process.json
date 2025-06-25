@@ -2,7 +2,7 @@
     "apps": [
         {
             "name": "api",
-            "script": "node server.js",
+            "script": "node src/server.js",
             "merge_logs": true,
             "max_restarts": 10,
             "instances": 1,
