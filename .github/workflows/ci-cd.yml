@@ -34,18 +34,10 @@ jobs:
           restore-keys: |
                     ${{ runner.os }}-node-
 
-      # # Unit test using Keploy
-      # - name: Install Keploy
-      #   run: |
-      #       curl --silent -O -L https://keploy.io/install.sh && source install.sh
-
-      # - name: Capturing Test cases
-      #   run: |
-      #      keploy record -c “node src/server.js"
-
-      # - name: Running test cases
-      #   run: |
-      #     keploy test -c “node src/server.js" --delay 10
+     # Test the code
+      - name: test the code
+        run: |
+           npm test
 
   
   lint_and_code_coverage:
@@ -90,7 +82,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-           npm install
+           npm ci
 
       
 
@@ -143,7 +135,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-           npm install
+           npm ci
 
       
       # - name: Build the code and generate the artifacts

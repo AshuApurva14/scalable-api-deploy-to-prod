@@ -1,29 +1,23 @@
 # syntax=docker/dockerfile:1
 ARG NODE_VERSION=24
-FROM node:${NODE_VERSION}-alpine3.22
 
+FROM node:${NODE_VERSION}-alpine3.22 AS base
 LABEL maintainer="apooorva01@gmail.com"
-
-ENV NODE_ENV=development
-
 WORKDIR /usr/src/app
-
-# Create and use a non-root user
-RUN apk add --no-cache curl && \
-    addgroup -S appgroup && \
-    adduser -S appuser -G appgroup
-
-COPY package.json package-lock.json ./
-
-RUN npm install pm2@6.0.8 -g && \
-    npm ci 
-  
-COPY . .
-
-USER appuser
-
 EXPOSE 4000
 
+FROM base AS dev
+COPY package.json package-lock.json ./
+RUN npm ci --include=dev
+COPY . .
+USER node
+CMD [ "npm", "run", "dev" ]
+
+FROM base AS prod
+COPY package.json package-lock.json ./
+ RUN npm ci --omit=dev
+COPY . .
+USER node
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:4000/health || exit 1
 

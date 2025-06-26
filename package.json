@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "prod": "node src/server.js",
     "pm2": "pm2 start process.json --no-daemon",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint 'src/*.js?(x)'"
