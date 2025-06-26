@@ -159,6 +159,8 @@ jobs:
     env:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      REGISTRY: docker.io
+
 
 
 
@@ -192,11 +194,12 @@ jobs:
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          load: true
       
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: docker.io/${{ steps.meta.outputs.tags }}:sha-${{ github.sha }}
+          image-ref: ${{ env.REGISTRY }}/${{ env.DOCKER_HUB_USERNAME }}/node-api:main
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
