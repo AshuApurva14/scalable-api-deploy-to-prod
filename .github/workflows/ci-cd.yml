@@ -152,7 +152,7 @@ jobs:
 
 
   docker_build_and_push:
-    runs-on: [ubuntu_latest]
+    runs-on: [ubuntu-latest]
     needs: [unit_testing, lint_and_code_coverage, build]
 
 
