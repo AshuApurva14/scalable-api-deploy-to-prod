@@ -15,6 +15,12 @@ app.get('/api/v1/health', (req, res) => {
   res.status(200).json({ status: 'API is running' });
 });
 
+app.use((req, res, next) => {
+  console.log(`${req.method} request for ${req.url}`);
+  next();
+});
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}/api/v1`);
