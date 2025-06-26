@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
-ARG NODE_VERSION=20.11.0
-FROM node:${NODE_VERSION}-alpine
+ARG NODE_VERSION=24
+FROM node:${NODE_VERSION}-alpine3.22
 
 LABEL maintainer="apooorva01@gmail.com"
 
