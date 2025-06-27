@@ -20,8 +20,9 @@ app.use((req, res, next) => {
   next();
 });
 
+if (require.main === module) {
+  app.listen(port, () => console.log('Server is running on http://localhost:$/{port}/api/v1'));
+}
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}/api/v1`);
-});
+
+module.exports = app;
