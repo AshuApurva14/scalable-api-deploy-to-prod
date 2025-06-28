@@ -221,27 +221,14 @@ jobs:
       
 
       - name: Send report to slack
+        uses: slackapi/slack-github-action@v2.1.0
         if: ${{ steps.image_scan.conclusion == 'success' }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          # Prepare Short Summary
-          SUMMARY=$(jq -r '.Results[] | "\(.Target): \(.Vulnerabilities | length) vulns"' /home/runner/work/deploy-api-nginx-prod/deploy-api-nginx-prod/trivy-report.json)
-
-          # Send Slack
-          curl -X POST -H 'Content-type: application/json' \
-          --data "{
-          \"text\": \"*Trivy Scan Report for your-image:latest*\n\`\`\`${SUMMARY}\`\`\`\",
-            \"attachments\": [
-              {
-                \"fallback\": \"Full report attached.\",
-                \"text\": \"[Trivy full JSON report attached as code block below] \",
-                \"fields\": [],
-                \"footer\": \"GitHub Actions\"
-              }
-            ]
-          }" \
-          ${{ env.SLACK_WEBHOOK_URL }}
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+               text: "The report of image scanning will soon shared in the channel"
+        
 
           
           
