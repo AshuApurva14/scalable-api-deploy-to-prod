@@ -7,12 +7,15 @@ services:
     container_name: node-app
     networks:
       - node-project
-    expose:
-      - 4000
+    ports:
+      - "4000:4000"
+      
 
   nginx:
-    image: nginx:alpine
-    container_name: nginx
+    build:
+      context: ./nginx/.
+      dockerfile: Dockerfile
+    container_name: webserver
     ports:
       - "8070:8070"
     volumes:
