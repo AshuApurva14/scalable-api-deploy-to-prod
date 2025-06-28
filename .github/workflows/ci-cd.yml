@@ -213,10 +213,11 @@ jobs:
           path: trivy-report.json
           retention-days: 30
         
-      # - name: Download Vulnerability Scan Results
-      #   uses: actions/download-artifact@v4
-      #     name: trivy-report
-      #     path: trivy-report.json
+      - name: Download Vulnerability Scan Results
+        uses: actions/download-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-report.json
       
 
       - name: Send report to slack
@@ -224,10 +225,26 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          
-          
-          curl -X POST --data-urlencode "payload={\"channel\": \"#image-scanning-reports\", \"username\": \"webhookbot\", \"text\": \"You can find the scanning report at #image-scanning-reports about build container image report.\", \"icon_emoji\": \":ghost:\"}" ${{ env.SLACK_WEBHOOK_URL }}
+          # Prepare Short Summary
+          SUMMARY=$(jq -r '.Results[] | "\(.Target): \(.Vulnerabilities | length) vulns"' /home/runner/work/deploy-api-nginx-prod/deploy-api-nginx-prod/trivy-report.json)
 
+          # Send Slack
+          curl -X POST -H 'Content-type: application/json' \
+          --data "{
+          \"text\": \"*Trivy Scan Report for your-image:latest*\n\`\`\`${SUMMARY}\`\`\`\",
+            \"attachments\": [
+              {
+                \"fallback\": \"Full report attached.\",
+                \"text\": \"[Trivy full JSON report attached as code block below] \",
+                \"fields\": [],
+                \"footer\": \"GitHub Actions\"
+              }
+            ]
+          }" \
+          ${{ env.SLACK_WEBHOOK_URL }}
+
+          
+          
       - name: Push Docker image
         uses: docker/build-push-action@v5
         with:
