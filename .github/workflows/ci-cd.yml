@@ -217,7 +217,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: trivy-report
-          path: /home/runner/work/deploy-api-nginx-prod/deploy-api-nginx-prod/trivy-report.json
+          
       
 
       - name: Send report to slack
