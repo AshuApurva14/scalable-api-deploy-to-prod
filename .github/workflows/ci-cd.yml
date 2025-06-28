@@ -194,6 +194,7 @@ jobs:
           load: true
       
       - name: Run Trivy vulnerability scanner
+        id: image_scan
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.DOCKER_HUB_USERNAME }}/node-api:main
@@ -203,6 +204,12 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
+
+      - name: Send report of image scanning to Slack channel
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST --data-urlencode "payload={\"channel\": \"#image-scanning-reports\", \"username\": \"webhookbot\", \"text\": \"This is posted to #image-scanning-reports about build container image report.\", \"icon_emoji\": \":ghost:\"}" ${{ env.SLACK_WEBHOOK_URL }}
 
       - name: Push Docker image
         uses: docker/build-push-action@v5
