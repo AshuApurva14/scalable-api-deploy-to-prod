@@ -4,8 +4,6 @@ ARG NODE_VERSION=24
 FROM node:${NODE_VERSION}-alpine3.22 AS base
 LABEL maintainer="apooorva01@gmail.com"
 WORKDIR /usr/src/app
-USER node 
-RUN 
 EXPOSE 4000
 
 FROM base AS dev
