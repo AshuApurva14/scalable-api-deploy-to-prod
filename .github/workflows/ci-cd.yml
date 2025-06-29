@@ -241,7 +241,8 @@ jobs:
         env: 
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         with:
-         payload: |
+          webhook-type: webhook-trigger
+          payload: |
             {
                "text": "✅ Trivy scan completed and report uploaded to the Security tab. Check it here: https://github.com/${{ github.repository }}/security/code-scanning"
             }
