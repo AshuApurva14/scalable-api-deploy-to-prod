@@ -240,14 +240,9 @@ jobs:
         uses: slackapi/slack-github-action@v2.1.0
         if: ${{ steps.image_scan.conclusion == 'success' }}
         with:
+          payload-file-path: "./trivy-report.json"
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          method: files.uploadV2
-          payload: |
-               text: "The report of image scanning will soon shared in the channel"
-               initial_comment: "the reports are in!"
-               file: "./trivy-report.json"
-               filename: "trivy-report.json"
+          webhook-type: webhook-trigger
         
 
       - name: Push Docker image
