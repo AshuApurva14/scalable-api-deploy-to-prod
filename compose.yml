@@ -1,7 +1,7 @@
 name: nodejs-api
 services:
   nginx:
-    build: ./nginx
+    build: /workspaces/deploy-api-nginx-prod/node-api-project/nginx
     ports:
      - '8081:8081'
     depends_on:
@@ -12,7 +12,7 @@ services:
 
   api:
     build: .
-    command: ["npm", "start"]
+    command: ["node", "src/server.js"]
     expose:
       - "5000"
 

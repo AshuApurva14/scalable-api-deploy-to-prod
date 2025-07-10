@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 4000;
+const port = 5000;
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 });
 
 if (require.main === module) {
-  app.listen(port, () => console.log('Server is running on http://localhost:${port}'));
+  app.listen(port, () => console.log('Server is running on http://localhost:5000/api/v1/'));
 }
 
 
