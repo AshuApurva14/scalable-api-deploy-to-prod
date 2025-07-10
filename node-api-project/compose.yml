@@ -1,14 +1,25 @@
 name: nodejs-api
 services:
-   app:
-    build: .
-    command: ["npm", "start"]
-    ports:
-     - 4000:4000
-   
-   nginx:
+  nginx:
     build: ./nginx
     ports:
-    - '8081:8081'
+     - '8081:8081'
     depends_on:
-    - app
+     - api
+
+    networks:
+     - api_networks
+
+  api:
+    build: .
+    command: ["npm", "start"]
+    expose:
+      - "5000"
+
+    networks:
+      - api_networks
+
+   
+networks:
+  api_networks:
+    driver: bridge

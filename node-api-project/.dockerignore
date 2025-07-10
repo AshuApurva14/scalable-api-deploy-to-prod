@@ -12,3 +12,8 @@ LICENSE
 
 README.md
 
+keploy.*
+
+eslint.*.mjs
+
+keploy/
