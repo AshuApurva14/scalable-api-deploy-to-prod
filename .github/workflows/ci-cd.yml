@@ -297,7 +297,7 @@ jobs:
     needs: docker_build_and_push 
 
     env:
-      AWS_ACCESS_KEY_ID :${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_ACCESS_KEY_ID : ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
       AWS_REGION: "us-east-1"
