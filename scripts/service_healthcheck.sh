@@ -5,9 +5,12 @@ set -e
 MAX_RETRY=20
 RETRY_COUNT=0
 
+docker inspect --format='{{json .State.Health}}' nginx_image
+
+
 echo "Let's check the service health"
 
-HTTPS_STATUS=$(curl -s -o /dev/null -w "%{http_code} http://localhost:5000/health)
+HTTPS_STATUS=$(curl -s -o /dev/null -w "%{http_code} http://localhost:5000//api/v1/health)
 
 while true; do 
 
