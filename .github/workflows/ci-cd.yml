@@ -297,6 +297,8 @@ jobs:
     needs: docker_build_and_push 
 
     env:
+      AWS_ACCESS_KEY_ID :${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
       AWS_REGION: "us-east-1"
       IMAGE_TAG: "v1.0"
@@ -310,11 +312,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
-          role-to-assume: ${{ env.AWS_IAM_ROLE }}
-          aws-region: ${{ env.AWS_REGION }}
+           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+           aws-region: us-east-1
+           role-to-assume: ${{ env.AWS_IAM_ROLE }}
+           aws-region: ${{ env.AWS_REGION }}
 
 
       - name: Amazon ECR "Login" Action 
