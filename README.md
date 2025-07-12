@@ -32,6 +32,21 @@ A sample Node.js API project running behind an NGINX reverse proxy using Docker 
 - Jest for testing
 - ESLint for linting
 
+## Security and DevOps Best Practices
+
+This project follows several security and DevOps best practices:
+
+- **Container Image Scanning:**  
+  All Docker images are scanned for vulnerabilities using [Trivy](https://github.com/aquasecurity/trivy). The scan results are uploaded to the GitHub Security tab for visibility and tracking.
+
+- **OIDC Identity Provider for AWS:**  
+  The project uses GitHub Actions with OIDC (OpenID Connect) to securely access AWS resources without long-lived credentials, following modern cloud security practices.
+
+- **Static Code Analysis:**  
+  Source code is analyzed using [SonarQube](https://www.sonarqube.org/) to detect bugs, vulnerabilities, and code smells. Reports are automatically uploaded to the SonarQube dashboard for review and continuous improvement.
+
+These practices help ensure the codebase is secure, maintainable, and compliant with industry standars.
+
 ## Endpoints
 
 - `GET /api/v1` — Returns status of the Node server
@@ -80,3 +95,4 @@ docker compose down
 ## License
 
 MIT
+
