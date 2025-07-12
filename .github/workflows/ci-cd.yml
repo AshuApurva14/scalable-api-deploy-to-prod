@@ -300,7 +300,7 @@ jobs:
       AWS_ACCESS_KEY_ID : ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
-      AWS_REGION: "us-east-1"
+      AWS_REGION: "ap-south-1"
       IMAGE_TAG: "v1.0"
 
 
