@@ -10,10 +10,56 @@ permissions:
 
 
 jobs:
-  unit_testing:
+
+  lint:
     runs-on: [ubuntu-latest]
 
     steps:
+
+      # Checkout Code repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      # Setup nodejs environement
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.2.0
+        with:
+            node-version: 22.16.0
+
+      # Find npm cache directory
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
+      # Cache dependencies
+      - name: Cache dependencies 
+        uses: actions/cache@v4
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+                    ${{ runner.os }}-node-
+
+      
+      # Install Dependencies
+      - name: Install nodejs dependencies
+        run: |
+           npm  ci
+
+      - name: Lint the source code
+        run: |
+          npm run lint 
+
+      
+  unit_testing:
+      runs-on: [ubuntu-latest]
+      needs: lint
+
+      steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.2
 
@@ -48,25 +94,21 @@ jobs:
         run: |
            npm test
 
-  
-  lint_and_code_coverage:
-    runs-on: [ubuntu-latest]
-    needs: unit_testing
-    
 
-    env:
+
+  code_analysis_and_security_scan:
+      runs-on: [ubuntu-latest]
+      needs: unit_testing
+
+      env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    steps:
 
-      # Checkout Code repository
+      steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.2
-        with:
-          fetch-depth: 0
 
-      # Setup nodejs environement
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.2.0
         with:
@@ -88,16 +130,10 @@ jobs:
           restore-keys: |
                     ${{ runner.os }}-node-
 
-
-      - name: Install dependencies
+      # Install Dependencies
+      - name: Install nodejs dependencies
         run: |
-           npm ci
-
-      
-
-      - name: Run linting
-        run: |
-          npm run lint 
+           npm  ci
 
       - name: Code Coverage by SonarQube
         run: |
@@ -107,7 +143,7 @@ jobs:
 
   build:
     runs-on: [ubuntu-latest]
-    needs: [unit_testing, lint_and_code_coverage]
+    needs: code_analysis_and_security_scan
 
 
     steps:
@@ -154,7 +190,7 @@ jobs:
 
   docker_build_and_push:
     runs-on: [ubuntu-latest]
-    needs: [unit_testing, lint_and_code_coverage, build]
+    needs: build
 
     
 
@@ -215,7 +251,7 @@ jobs:
       #                    short: true
       #                    value: "In Progress"
       
-      - name: Run Trivy vulnerability scanner
+      - name: Image security and vulnerability scanner
         id: image_scan
         uses: aquasecurity/trivy-action@master
         with:
@@ -228,7 +264,7 @@ jobs:
           output: trivy-results.sarif
 
 
-      - name: Upload Trivy scan results to GitHub Security tab
+      - name: Upload security scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
@@ -256,6 +292,44 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+  deploy_to_staging:
+    runs-on: [ubuntu-latest]
+    needs: docker_build_and_push 
+
+    env:
+      AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
+      AWS_REGION: "us-east-1"
+      IMAGE_TAG: "v1.0"
+
+
+
+    steps:
+     
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
+        with:
+          role-to-assume: ${{ env.AWS_IAM_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+
+      - name: Amazon ECR "Login" Action 
+        uses: aws-actions/amazon-ecr-login@v2.0.1
+        id: login-ecr
+        
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: node-api
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       
 

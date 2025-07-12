@@ -13,3 +13,5 @@ LICENSE
 README.md
 
 .trunk/
+
+*.zip
