@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
-ARG NODE_VERSION=24
+# ARG NODE_VERSION=current-alpine3.21
 
-FROM node:${NODE_VERSION}-alpine3.22 AS base
+
+FROM node:alpine3.21 AS base
 LABEL maintainer="apooorva01@gmail.com"
 WORKDIR /usr/src/app
 EXPOSE 5000
