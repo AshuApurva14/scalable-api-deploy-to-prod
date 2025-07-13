@@ -60,7 +60,8 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./frontend.Dockerfile
+          context: .
+          file: frontend.Dockerfile
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           annotations: ${{ steps.meta.outputs.annotations }}
