@@ -59,7 +59,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
-          context: /workspaces/deploy-api-nginx-prod/nginx/Dockerfile
+          context: ./nginx
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           annotations: ${{ steps.meta.outputs.annotations }}
@@ -122,5 +122,5 @@ jobs:
           REPOSITORY: node-api
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./nginx
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
