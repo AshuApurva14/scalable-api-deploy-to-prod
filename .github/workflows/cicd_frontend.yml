@@ -5,8 +5,8 @@ on:
 
 
 permissions:
-      context: write
-      security-events: write
+    contents: write
+    security-events: write
 
    
 
