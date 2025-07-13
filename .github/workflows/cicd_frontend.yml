@@ -97,6 +97,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: fronetend.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -124,5 +125,5 @@ jobs:
           REPOSITORY: node-api
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG ./nginx
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG --file=fronetend.Dockerfile .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
