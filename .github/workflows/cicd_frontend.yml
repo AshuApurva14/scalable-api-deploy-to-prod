@@ -125,5 +125,5 @@ jobs:
           REPOSITORY: node-api
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG --file=fronetend.Dockerfile .
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG --file=frontend.Dockerfile .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
