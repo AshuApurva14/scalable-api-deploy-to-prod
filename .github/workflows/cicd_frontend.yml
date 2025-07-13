@@ -1,0 +1,119 @@
+name: CI setup for Nginx frontend
+
+on:
+  workflow_dispatch:
+
+
+  permissions:
+      id-token: write
+      contents: read
+      security-events: write
+
+  env:
+
+      AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
+      AWS_REGION: "ap-south-1"
+      IMAGE_TAG: "v1.0"
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      REGISTRY: docker.io
+
+
+
+jobs:
+
+  lint:
+    runs-on: [ubuntu-latest]
+
+    steps:
+
+      # Checkout Code repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Extract Docker image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_HUB_USERNAME }}/nginx-frontend
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKER_HUB_USERNAME }}
+          password: ${{ env.DOCKER_HUB_TOKEN }}
+        
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          load: true
+
+      
+      - name: Image security and vulnerability scanner
+        id: image_scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.DOCKER_HUB_USERNAME }}/nginx-frontend:v0.1
+          format: 'sarif'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+          output: trivy-results.sarif
+      
+      - name: Send report to slack
+        uses: slackapi/slack-github-action@v2.1.0
+        if: ${{ steps.image_scan.conclusion == 'success' }}
+        env: 
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          webhook-type: webhook-trigger
+          payload: |
+            {
+               "text": "✅ Trivy scan for Backend service is completed and report is uploaded to the Security tab. Check it here: https://github.com/${{ github.repository }}/security/code-scanning"
+            }
+
+
+      - name: Push fronetend image to Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  
+      - name: Configure AWS Credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4.1.0
+        with:
+           role-to-assume: ${{ env.AWS_IAM_ROLE }}
+           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Test the AWS user identity
+        run: |
+           aws sts get-caller-identity 
+
+
+      - name: Amazon ECR "Login" Action 
+        uses: aws-actions/amazon-ecr-login@v2.0.1
+        id: login-ecr
+        
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: node-api
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
