@@ -5,7 +5,7 @@ ENV NGINX_ENV=development
 # Create a non-root user and group, update packages, and remove default config
 RUN rm /etc/nginx/conf.d/default.conf
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 8081
 
