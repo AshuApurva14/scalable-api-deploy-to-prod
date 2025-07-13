@@ -17,7 +17,7 @@ jobs:
   lint:
     runs-on: [ubuntu-latest]
 
-     env:
+    env:
 
       AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
       AWS_REGION: "ap-south-1"
