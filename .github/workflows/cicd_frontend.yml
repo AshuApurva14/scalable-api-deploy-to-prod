@@ -71,7 +71,7 @@ jobs:
         id: image_scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.DOCKER_HUB_USERNAME }}/nginx-frontend:v0.1
+          image-ref: ${{ env.REGISTRY }}/${{ env.DOCKER_HUB_USERNAME }}/nginx-frontend:main
           format: 'sarif'
           exit-code: '1'
           ignore-unfixed: true
