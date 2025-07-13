@@ -304,7 +304,7 @@ jobs:
           REPOSITORY: node-api
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f /workspaces/deploy-api-nginx-prod/nginx/Dockerfile
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       

@@ -59,7 +59,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: /workspaces/deploy-api-nginx-prod/nginx/Dockerfile
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           annotations: ${{ steps.meta.outputs.annotations }}
