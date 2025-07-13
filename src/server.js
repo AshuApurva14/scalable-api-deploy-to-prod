@@ -7,12 +7,12 @@ app.use(express.json());
 
 // Basic route for node server
 app.get('/api/v1', (req, res) => {
-  res.status(200).json({ status: 'Node server is running' });
+  res.status(200).json({ status: 'API Service is running' });
 });
 
 // Basic route for health check
 app.get('/api/v1/health', (req, res) => {
-  res.status(200).json({ status: 'API is running' });
+  res.status(200).json({ status: 'I am healthy!.' });
 });
 
 app.use((req, res, next) => {
