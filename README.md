@@ -1,5 +1,7 @@
 # Scalable API deployment with Nginx
 
+[![CI setup for Nodejs API app](https://github.com/AshuApurva14/scalable-api-deploy-to-prod/actions/workflows/ci-cd.yml/badge.svg?branch=main&event=push)](https://github.com/AshuApurva14/scalable-api-deploy-to-prod/actions/workflows/ci-cd.yml?branch=main)
+
 A sample Node.js API project running behind an NGINX reverse proxy using Docker Compose.
 
 ## Project Structure
