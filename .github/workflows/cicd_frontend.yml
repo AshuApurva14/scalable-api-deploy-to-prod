@@ -4,18 +4,11 @@ on:
   workflow_dispatch:
 
 
-  permissions:
+permissions:
       context: write
       security-events: write
 
-  env:
-
-      AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
-      AWS_REGION: "ap-south-1"
-      IMAGE_TAG: "v1.0"
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-      REGISTRY: docker.io
+   
 
 
 
@@ -23,6 +16,15 @@ jobs:
 
   lint:
     runs-on: [ubuntu-latest]
+
+     env:
+
+      AWS_IAM_ROLE: ${{ secrets.AWS_IAM_ROLE }}
+      AWS_REGION: "ap-south-1"
+      IMAGE_TAG: "v1.0"
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      REGISTRY: docker.io
 
 
     
