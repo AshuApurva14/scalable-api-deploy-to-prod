@@ -5,8 +5,7 @@ on:
 
 
   permissions:
-      id-token: write
-      contents: read
+      context: write
       security-events: write
 
   env:
@@ -24,6 +23,12 @@ jobs:
 
   lint:
     runs-on: [ubuntu-latest]
+
+
+    
+    permissions:
+       id-token: write
+       contents: read
 
     steps:
 
