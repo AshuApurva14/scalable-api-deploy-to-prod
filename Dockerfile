@@ -16,7 +16,7 @@ CMD [ "npm", "run", "dev" ]
 
 FROM base AS prod
 COPY package.json package-lock.json ./
- RUN npm ci --omit=dev
+ RUN npm ci --only=production
 COPY . .
 USER node
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \

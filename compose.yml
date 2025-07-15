@@ -1,7 +1,9 @@
 name: nodejs-api
 services:
   nginx:
-    build: /workspaces/deploy-api-nginx-prod/nginx
+    build:
+     context: .
+     dockerfile: frontend.Dockerfile
     ports:
      - '8081:8081'
     depends_on:
@@ -11,7 +13,9 @@ services:
      - api_networks
 
   api:
-    build: .
+    build: 
+     context: .
+     dockerfile: Dockerfile
     command: ["node", "src/server.js"]
     expose:
       - "5000"
